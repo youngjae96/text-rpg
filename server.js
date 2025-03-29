@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express(); // ✅ 반드시 app 선언 먼저!!
+const User = require('./models/User');
 
 // ✅ 세션 설정은 가장 위에!
 app.use(session({
@@ -16,6 +17,19 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 2
   }
 }));
+
+//자동으로 기존 유저들 maxHp, maxMp 필드 생성
+(async () => {
+  try {
+    const result = await User.updateMany(
+      { maxHp: { $exists: false } },
+      { $set: { maxHp: 100, maxMp: 50 } }
+    );
+    console.log(`🛠️ 기존 유저 업데이트 완료: ${result.modifiedCount}명`);
+  } catch (err) {
+    console.error('❌ 유저 업데이트 실패:', err);
+  }
+})();
 
 // 📦 기본 미들웨어
 app.set('view engine', 'ejs');
