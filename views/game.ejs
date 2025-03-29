@@ -11,12 +11,12 @@
   <p>레벨: <span id="level"><%= user.level %></span> | 경험치: <span id="exp"><%= user.exp %></span></p>
 <p>HP: <span id="hp"><%= user.hp %></span> | MP: <span id="mp"><%= user.mp %></span></p>
 <p>
-  💪 STR: <span id="str"><%= user.str %></span> |
-  🎯 DEX: <span id="dex"><%= user.dex %></span> |
-  🧠 INT: <span id="int"><%= user.int %></span> |
-  💖 VIT: <span id="vit"><%= user.vit %></span> |
-  🔮 WIS: <span id="wis"><%= user.wis %></span> |
-  🍀 LUK: <span id="luk"><%= user.luk %></span>
+💪 STR: <span id="str"><%= user.str %></span><%= bonus.str ? ` (+${bonus.str})` : '' %> |
+🎯 DEX: <span id="dex"><%= user.dex %></span> |
+🧠 INT: <span id="int"><%= user.int %></span> |
+💖 VIT: <span id="vit"><%= user.vit %></span> |
+🔮 WIS: <span id="wis"><%= user.wis %></span> |
+🍀 LUK: <span id="luk"><%= user.luk %></span>
 </p>
 <p>현재 지역: <span id="currentLocation"><%= user.currentLocation %></span></p>
 
