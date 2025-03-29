@@ -4,17 +4,12 @@ const User = require('../models/User');
 const { calculateTotalStats } = require('../utils/statCalculator');
 const { getItemStatsByName } = require('../utils/itemStats');
 
-// 로그인 상태 확인용 미들웨어
 function checkLogin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect('/login');
   }
   next();
 }
-
-// 메인 게임 화면
-
-// gameRoutes.js
 
 router.get('/', checkLogin, async (req, res) => {
   try {
@@ -32,7 +27,7 @@ router.get('/', checkLogin, async (req, res) => {
       luk: totalStats.luk - user.luk,
       def: 0,
       atk: 0,
-      mp: 0,
+      mp: 0
     };
 
     const weapon = user.equipped.weapon;
@@ -46,21 +41,17 @@ router.get('/', checkLogin, async (req, res) => {
     bonus.def = armorStats.def || 0;
     bonus.mp = accessoryStats.mp || 0;
 
-    // 🔥 ATK = (STR + bonus) * 1.5 + 무기 고유 ATK
     const baseStr = user.str || 0;
     const totalStr = baseStr + bonus.str;
     const weaponAtk = weaponStats.atk || 0;
     bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
 
     res.render('game', { user, bonus });
-
   } catch (err) {
-    console.error('게임 화면 로드 중 오류:', err);
+    console.error('게임 화면 로딩 중 오류:', err);
     res.status(500).send('서버 오류');
   }
 });
-
-
 
 
 
