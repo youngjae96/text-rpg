@@ -97,6 +97,9 @@ router.get('/inn', (req, res) => {
 
 router.post('/inn/rest', async (req, res) => {
   const user = await User.findById(req.session.userId);
+  if (!user) {
+    return res.redirect('/login');
+  }
 
   const innPrice = 10;
   if (user.gold < innPrice) {
@@ -105,17 +108,15 @@ router.post('/inn/rest', async (req, res) => {
     user.messages.push('❌ 여관은 마을에서만 이용 가능합니다.');
   } else {
     user.gold -= innPrice;
-
-    // ✅ 최대 HP/MP로 회복 (기본값 설정)
-    user.hp = user.maxHp || 100;
-    user.mp = user.maxMp || 50;
-
+    user.hp = user.maxHp;
+    user.mp = user.maxMp;
     user.messages.push(`🛏️ 여관에서 휴식을 취했습니다! HP/MP가 회복되었습니다. (-${innPrice}G)`);
+    await user.save();
   }
 
-  await user.save();
   res.redirect('/');
 });
+
 
 
 module.exports = router;
