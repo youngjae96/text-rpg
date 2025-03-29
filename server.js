@@ -23,10 +23,15 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ✅ MongoDB 연결
-mongoose.connect('mongodb://localhost:27017/text_rpg', {
-}).then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB 연결 실패:', err));
+// ✅ MongoDB 연결 (한 번만!)
+mongoose.connect('mongodb+srv://p84268:dudwo123@cluster0.ftimnga.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('✅ MongoDB 연결 성공!');
+}).catch(err => {
+  console.error('❌ MongoDB 연결 실패:', err);
+});
 
 // ✅ 라우터 등록
 const gameRoutes = require('./routes/gameRoutes');
