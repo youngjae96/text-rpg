@@ -39,6 +39,7 @@
   document.getElementById('vit').textContent = data.vit;
   document.getElementById('wis').textContent = data.wis;
   document.getElementById('luk').textContent = data.luk;
+document.getElementById('atk').textContent = Math.floor((data.str + (data.bonus?.str || 0)) * 1.5);
 
   // ✅ 전투 로그 출력
   const battleLogList = document.getElementById('battleLog');
