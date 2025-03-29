@@ -95,25 +95,27 @@ router.get('/inn', (req, res) => {
   res.render('inn');
 });
 
-// 여관 숙박 처리
-// 여관 숙박 처리
 router.post('/inn/rest', async (req, res) => {
   const user = await User.findById(req.session.userId);
 
   const innPrice = 10;
   if (user.gold < innPrice) {
     user.messages.push('💰 골드가 부족합니다.');
-  } else if (user.currentLocation !== 'town') {  // 'village'를 'town'으로 수정
+  } else if (user.currentLocation !== 'village') {
     user.messages.push('❌ 여관은 마을에서만 이용 가능합니다.');
   } else {
     user.gold -= innPrice;
-    user.hp = 100; 
-    user.mp = 50;
+
+    // ✅ 최대 HP/MP로 회복 (기본값 설정)
+    user.hp = user.maxHp || 100;
+    user.mp = user.maxMp || 50;
+
     user.messages.push(`🛏️ 여관에서 휴식을 취했습니다! HP/MP가 회복되었습니다. (-${innPrice}G)`);
   }
 
   await user.save();
   res.redirect('/');
 });
+
 
 module.exports = router;
