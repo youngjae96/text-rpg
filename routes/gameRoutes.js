@@ -15,9 +15,23 @@ router.get('/', checkLogin, async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.redirect('/login');
 
+  // ✅ maxHp / maxMp 필드가 없다면 자동 추가
+  let updated = false;
+  if (user.maxHp === undefined) {
+    user.maxHp = user.hp || 100;
+    updated = true;
+  }
+  if (user.maxMp === undefined) {
+    user.maxMp = user.mp || 50;
+    updated = true;
+  }
+  if (updated) {
+    await user.save(); // 자동으로 업데이트 저장
+  }
 
   res.render('game', { user });
 });
+
 
 // 로그인 화면
 router.get('/login', (req, res) => {
