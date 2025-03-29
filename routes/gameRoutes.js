@@ -30,26 +30,25 @@ router.get('/', checkLogin, async (req, res) => {
       wis: totalStats.wis - user.wis,
       luk: totalStats.luk - user.luk,
       def: user.equipped.armor?.stats?.def || 0,
-      atk: user.equipped.weapon?.stats?.atk || 0,
       mp: user.equipped.accessory?.stats?.mp || 0
     };
-    });
+
+    // ✅ ATK 계산
+    const baseStr = user.str || 0;
+    const totalStr = baseStr + bonus.str;
+    const weaponAtk = user.equipped.weapon?.stats?.atk || 0;
+    const calculatedAtk = Math.floor(totalStr * 1.5 + weaponAtk);
+    bonus.atk = calculatedAtk;
+
+    // ✅ 렌더링도 try 안에 있어야 함
+    res.render('game', { user, bonus });
+
   } catch (err) {
     console.error('게임 화면 로드 중 오류:', err);
     res.status(500).send('서버 오류');
   }
 });
 
-
-  // ATK 계산 (STR 영향 + 무기 자체 atk)
-  const baseStr = user.str || 0;
-  const totalStr = baseStr + bonus.str;
-  const weaponAtk = weapon.stats?.atk || 0;
-  const calculatedAtk = Math.floor(totalStr * 1.5 + weaponAtk);
-  bonus.atk = calculatedAtk;
-
-  res.render('game', { user, bonus });
-});
 
 
 
