@@ -18,27 +18,33 @@ router.get('/', checkLogin, async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.redirect('/login');
 
-  // 장착 아이템의 능력치 합산
   const equipped = user.equipped || {};
   const weapon = equipped.weapon || {};
   const armor = equipped.armor || {};
   const accessory = equipped.accessory || {};
 
+  // 장비 능력치 추출
   const bonus = {
-  str: weapon.str || 0,
-  dex: weapon.dex || 0,
-  int: weapon.int || 0,
-  vit: armor.vit || 0,
-  wis: accessory.wis || 0,
-  luk: accessory.luk || 0,
-  atk: weapon.atk || 0, // ✅ 추가
-  def: armor.def || 0,
-  mpPlus: accessory.mp || 0
-};
+    str: weapon.stats?.str || 0,
+    dex: weapon.stats?.dex || 0,
+    int: weapon.stats?.int || 0,
+    vit: armor.stats?.vit || 0,
+    wis: accessory.stats?.wis || 0,
+    luk: accessory.stats?.luk || 0,
+    def: armor.stats?.def || 0,
+    mpPlus: accessory.stats?.mp || 0,
+  };
 
+  // ATK 계산 (STR 영향 + 무기 자체 atk)
+  const baseStr = user.str || 0;
+  const totalStr = baseStr + bonus.str;
+  const weaponAtk = weapon.stats?.atk || 0;
+  const calculatedAtk = Math.floor(totalStr * 1.5 + weaponAtk);
+  bonus.atk = calculatedAtk;
 
   res.render('game', { user, bonus });
 });
+
 
 
 
