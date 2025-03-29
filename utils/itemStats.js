@@ -10,7 +10,11 @@ const itemStatsData = {
 };
 
 function getItemStatsByName(name) {
-  return itemStatsData[name] || {}; // 이름 없으면 빈 객체 반환
+  if (!name) return {};
+
+  // ✅ 이름 끝의 " +숫자" 제거 (예: "청동검 +1" → "청동검")
+  const cleanName = name.replace(/\s*\+\d+$/, '');
+  return itemStatsData[cleanName] || {};
 }
 
 module.exports = { getItemStatsByName };
