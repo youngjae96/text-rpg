@@ -110,6 +110,36 @@ router.get('/status', async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.status(401).json({});
 
+  const totalStats = calculateTotalStats(user);
+
+  const bonus = {
+    str: totalStats.str - user.str,
+    dex: totalStats.dex - user.dex,
+    int: totalStats.int - user.int,
+    vit: totalStats.vit - user.vit,
+    wis: totalStats.wis - user.wis,
+    luk: totalStats.luk - user.luk,
+    def: 0,
+    atk: 0,
+    mp: 0
+  };
+
+  const weapon = user.equipped.weapon;
+  const armor = user.equipped.armor;
+  const accessory = user.equipped.accessory;
+
+  const weaponStats = weapon ? getItemStatsByName(weapon.name) : {};
+  const armorStats = armor ? getItemStatsByName(armor.name) : {};
+  const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
+
+  bonus.def = armorStats.def || 0;
+  bonus.mp = accessoryStats.mp || 0;
+
+  const baseStr = user.str || 0;
+  const totalStr = baseStr + bonus.str;
+  const weaponAtk = weaponStats.atk || 0;
+  bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
+
   res.json({
     level: user.level,
     exp: user.exp,
@@ -122,9 +152,11 @@ router.get('/status', async (req, res) => {
     vit: user.vit,
     wis: user.wis,
     luk: user.luk,
-    battleLogs: user.battleLogs.slice(-10).reverse() // 최신 10개만
+    bonus, // ✅ 여기에 포함!
+    battleLogs: user.battleLogs.slice(-10).reverse()
   });
 });
+
 
 
 // 여관 페이지 렌더링
