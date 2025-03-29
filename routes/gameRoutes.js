@@ -120,7 +120,7 @@ router.post('/inn/rest', async (req, res) => {
   const innPrice = 10;
   if (user.gold < innPrice) {
     user.messages.push('💰 골드가 부족합니다.');
-  } else if (user.currentLocation !== 'village') {
+  } else if (user.currentLocation !== 'town') {
     user.messages.push('❌ 여관은 마을에서만 이용 가능합니다.');
   } else {
     user.gold -= innPrice;
