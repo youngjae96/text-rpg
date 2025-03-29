@@ -16,26 +16,30 @@ function checkLogin(req, res, next) {
 // gameRoutes.js
 
 router.get('/', checkLogin, async (req, res) => {
-  const user = await User.findById(req.session.userId);
-  if (!user) return res.redirect('/login');
+  try {
+    const user = await User.findById(req.session.userId);
+    if (!user) return res.redirect('/login');
 
-  const totalStats = calculateTotalStats(user);
+    const totalStats = calculateTotalStats(user);
 
-  const bonus = {
-    str: totalStats.str - user.str,
-    dex: totalStats.dex - user.dex,
-    int: totalStats.int - user.int,
-    vit: totalStats.vit - user.vit,
-    wis: totalStats.wis - user.wis,
-    luk: totalStats.luk - user.luk,
-    def: user.equipped.armor?.stats?.def || 0,
-    atk: user.equipped.weapon?.stats?.atk || 0,
-    mp: user.equipped.accessory?.stats?.mp || 0
-  res.render('game', {
-    user,
-    bonus
-  });
+    const bonus = {
+      str: totalStats.str - user.str,
+      dex: totalStats.dex - user.dex,
+      int: totalStats.int - user.int,
+      vit: totalStats.vit - user.vit,
+      wis: totalStats.wis - user.wis,
+      luk: totalStats.luk - user.luk,
+      def: user.equipped.armor?.stats?.def || 0,
+      atk: user.equipped.weapon?.stats?.atk || 0,
+      mp: user.equipped.accessory?.stats?.mp || 0
+    };
+    });
+  } catch (err) {
+    console.error('게임 화면 로드 중 오류:', err);
+    res.status(500).send('서버 오류');
+  }
 });
+
 
   // ATK 계산 (STR 영향 + 무기 자체 atk)
   const baseStr = user.str || 0;
