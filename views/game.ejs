@@ -39,7 +39,12 @@
   document.getElementById('vit').textContent = data.vit;
   document.getElementById('wis').textContent = data.wis;
   document.getElementById('luk').textContent = data.luk;
-document.getElementById('atk').textContent = Math.floor((data.str + (data.bonus?.str || 0)) * 1.5);
+
+  // ✅ 이 부분이 없어서 DEF가 안 바뀌고 있었음!
+  document.getElementById('def').textContent = data.bonus?.def || 0;
+  document.getElementById('atk').textContent = Math.floor((data.str + (data.bonus?.str || 0)) * 1.5 + (data.bonus?.atk || 0));
+}
+
 
   // ✅ 전투 로그 출력
   const battleLogList = document.getElementById('battleLog');
