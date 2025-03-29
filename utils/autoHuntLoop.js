@@ -64,13 +64,13 @@ function startAutoHuntLoop() {
 
       user.exp += expGain;
       user.gold += goldGain;
-      user.messages.push(`🗡️ 몬스터 처치 (+${expGain} EXP, +${goldGain} G)`);
+      user.battleLogs.push(`🗡️ 몬스터 처치 (+${expGain} EXP, +${goldGain} G)`);
 
       // 몬스터의 반격
       const monsterDamage = Math.floor(Math.random() * 5) + 5; // 5~9
       user.hp -= monsterDamage;
       user.hp = Math.max(user.hp, 0);
-      user.messages.push(`💢 몬스터의 공격! HP -${monsterDamage} → ${user.hp}`);
+      user.battleLogs.push(`💢 몬스터의 공격! HP -${monsterDamage} → ${user.hp}`);
       user.battleLogs.push(`🩸 몬스터에게 공격당해 HP -${monsterDamage} → ${user.hp}`);
 
       // 레벨업 처리
