@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>회원가입</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>📝 회원가입</h1>
+  <form method="POST" action="/register">
+    <p><input type="text" name="username" placeholder="아이디" required /></p>
+    <p><input type="password" name="password" placeholder="비밀번호" required /></p>
+    <p><input type="text" name="nickname" placeholder="닉네임" required /></p>
+    <p>
+      <select name="job" required>
+        <option value="">직업 선택</option>
+        <option value="검사">검사</option>
+        <option value="마법사">마법사</option>
+        <option value="궁수">궁수</option>
+        <option value="도적">도적</option>
+      </select>
+    </p>
+    <p><button type="submit">가입하기</button></p>
+  </form>
+</body>
+</html>

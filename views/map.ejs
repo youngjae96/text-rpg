@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>지역 이동</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>🧭 지역 이동</h1>
+  <p>현재 위치: <%= user.currentLocation %></p>
+
+  <ul>
+    <% areas.forEach(area => { %>
+      <li>
+        <strong><%= area.name %></strong> - <%= area.desc %>
+        <% if (area.id !== user.currentLocation) { %>
+          <form method="POST" action="/map/move" style="display:inline;">
+            <input type="hidden" name="destination" value="<%= area.id %>" />
+            <button type="submit">이동</button>
+          </form>
+        <% } else { %>
+          <span> (현재 위치)</span>
+        <% } %>
+      </li>
+    <% }); %>
+  </ul>
+
+  <p><a href="/">🔙 돌아가기</a></p>
+</body>
+</html>

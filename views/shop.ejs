@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>상점</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>🛒 <%= user.nickname %>의 상점 방문</h1>
+  <p>보유 골드: <%= user.gold %> G</p>
+
+  <h2>💰 상점 판매 목록</h2>
+  <ul>
+    <% shopItems.forEach((item, i) => { %>
+      <li>
+        <span class="item-<%= item.grade === '전설' ? 'legendary' : item.grade === '희귀' ? 'rare' : 'common' %>">
+          [<%= item.grade %>] <%= item.name %> - <%= item.price %> G
+        </span>
+        <form method="POST" action="/shop/buy" style="display:inline;">
+          <input type="hidden" name="itemIndex" value="<%= i %>" />
+          <button type="submit">구매</button>
+        </form>
+      </li>
+    <% }); %>
+  </ul>
+
+  <h2>🎒 보유 아이템 판매</h2>
+  <ul>
+    <% user.inventory.forEach((item, i) => { %>
+      <li>
+        <%= item.name %>
+        <form method="POST" action="/shop/sell" style="display:inline;">
+          <input type="hidden" name="itemIndex" value="<%= i %>" />
+          <button type="submit">판매</button>
+        </form>
+      </li>
+    <% }); %>
+  </ul>
+
+  <p><a href="/">🔙 돌아가기</a></p>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>광장 (방명록)</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>📝 마을 광장 - 방명록</h1>
+
+  <form method="POST" action="/plaza/post">
+    <input type="text" name="message" placeholder="메시지 남기기" required />
+    <button type="submit">등록</button>
+  </form>
+
+  <ul>
+    <% user.messages.slice(-10).reverse().forEach(msg => { %>
+      <li><%= msg %></li>
+    <% }); %>
+  </ul>
+
+  <p><a href="/">🔙 돌아가기</a></p>
+</body>
+</html>

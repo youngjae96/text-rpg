@@ -1,0 +1,43 @@
+text-rpg2
+│  file_structure.txt
+│  package-lock.json
+│  package.json
+│  server.js
+│  
+├─models
+│      PlazaMessage.js
+│      User.js
+│      
+├─node_modules
+│      … (모든 node_modules 폴더 내용)
+│      
+├─public
+│  └─css
+│          styles.css
+│          
+├─routes
+│      battleRoutes.js
+│      gameRoutes.js
+│      inventoryRoutes.js
+│      jobRoutes.js
+│      mapRoutes.js
+│      messageRoutes.js
+│      plazaRoutes.js
+│      shopRoutes.js
+│      
+├─utils
+│      autoHuntLoop.js
+│      
+└─views
+    │  game.ejs
+    │  inn.ejs
+    │  inventory.ejs
+    │  jobchange.ejs
+    │  login.ejs
+    │  map.ejs
+    │  plaza.ejs
+    │  register.ejs
+    │  shop.ejs
+    │  
+    └─partials
+            plazaBox.ejs

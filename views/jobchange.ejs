@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>전직</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>🔁 전직 선택</h1>
+  <p><%= user.job %> → 전직 가능! 레벨: <%= user.level %></p>
+
+  <form method="POST" action="/jobchange">
+    <% options.forEach(option => { %>
+      <div>
+        <label>
+          <input type="radio" name="subClass" value="<%= option %>" required />
+          <%= option %>
+        </label>
+      </div>
+    <% }) %>
+    <button type="submit">전직하기</button>
+  </form>
+
+  <p><a href="/">🔙 돌아가기</a></p>
+</body>
+</html>

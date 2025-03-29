@@ -1,0 +1,49 @@
+body {
+  font-family: monospace;
+  background-color: #111;
+  color: #eee;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #f1c40f;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+a {
+  color: #1abc9c;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+button {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #666;
+}
+
+.item-common {
+  color: #ccc;
+}
+
+.item-rare {
+  color: #3498db;
+}
+
+.item-legendary {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.monster {
+  color: #e74c3c;
+  font-weight: bold;
+}

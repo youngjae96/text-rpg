@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>인벤토리</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>🎒 <%= user.nickname %>의 인벤토리</h1>
+
+  <ul>
+    <% user.inventory.forEach((item, i) => { %>
+      <li>
+        <span class="item-<%= item.grade === '전설' ? 'legendary' : item.grade === '희귀' ? 'rare' : 'common' %>">
+          [<%= item.grade %>] <%= item.name %>
+        </span>
+        <% if (item.type === 'consumable') { %>
+          <form method="POST" action="/inventory/use" style="display:inline;">
+            <input type="hidden" name="itemIndex" value="<%= i %>" />
+            <button type="submit">사용</button>
+          </form>
+        <% } else { %>
+          <form method="POST" action="/inventory/equip" style="display:inline;">
+            <input type="hidden" name="itemIndex" value="<%= i %>" />
+            <button type="submit">장착</button>
+          </form>
+        <% } %>
+      </li>
+    <% }); %>
+  </ul>
+
+  <h3>장착 중:</h3>
+  <p>무기: <%= user.equipped.weapon ? user.equipped.weapon.name : '없음' %>
+    <form method="POST" action="/inventory/unequip">
+      <input type="hidden" name="slot" value="weapon" />
+      <button type="submit">해제</button>
+    </form>
+  </p>
+
+  <p><a href="/">🔙 돌아가기</a></p>
+</body>
+</html>

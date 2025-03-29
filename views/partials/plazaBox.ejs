@@ -1,0 +1,33 @@
+<div id="plaza-box" style="display:none; position:fixed; bottom:60px; right:20px; width:300px; background:#222; color:#fff; border:1px solid #555; padding:10px; z-index:999;">
+  <h4>📜 마을 광장</h4>
+  <form method="POST" action="/plaza/post">
+    <input type="text" name="message" placeholder="메시지 입력" style="width:70%;" required />
+    <button type="submit">등록</button>
+  </form>
+  <ul id="plaza-messages" style="max-height:200px; overflow:auto; margin-top:10px;"></ul>
+</div>
+
+<button id="plaza-toggle" style="position:fixed; bottom:20px; right:20px; z-index:1000;">💬 방명록</button>
+
+<script>
+  const box = document.getElementById('plaza-box');
+  const toggle = document.getElementById('plaza-toggle');
+  toggle.addEventListener('click', () => {
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  });
+
+  async function loadPlazaMessages() {
+    const res = await fetch('/plaza/messages');
+    const data = await res.json();
+    const ul = document.getElementById('plaza-messages');
+    ul.innerHTML = '';
+    data.forEach(msg => {
+      const li = document.createElement('li');
+      li.textContent = msg;
+      ul.appendChild(li);
+    });
+  }
+
+  setInterval(loadPlazaMessages, 5000);
+  loadPlazaMessages();
+</script>
