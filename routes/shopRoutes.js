@@ -14,7 +14,7 @@ res.render('shop', { user, shopItems: itemsForSale });
 router.post('/buy', async (req, res) => {
   const { itemIndex } = req.body;
   const user = await User.findById(req.session.userId);
-  const item = shopItems[itemIndex];
+  const item = itemsForSale[itemIndex];
 
   if (!user || !item || user.gold < item.price) return res.redirect('/shop');
 
