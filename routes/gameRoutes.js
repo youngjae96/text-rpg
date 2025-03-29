@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const { calculateTotalStats } = require('../utils/statCalculator');
+const { getItemStatsByName } = require('../utils/itemStats');
 
 // 로그인 상태 확인용 미들웨어
 function checkLogin(req, res, next) {
@@ -29,18 +30,28 @@ router.get('/', checkLogin, async (req, res) => {
       vit: totalStats.vit - user.vit,
       wis: totalStats.wis - user.wis,
       luk: totalStats.luk - user.luk,
-      def: user.equipped.armor?.stats?.def || 0,
-      mp: user.equipped.accessory?.stats?.mp || 0
+      def: 0,
+      atk: 0,
+      mp: 0,
     };
 
-    // ✅ ATK 계산
+    const weapon = user.equipped.weapon;
+    const armor = user.equipped.armor;
+    const accessory = user.equipped.accessory;
+
+    const weaponStats = weapon ? getItemStatsByName(weapon.name) : {};
+    const armorStats = armor ? getItemStatsByName(armor.name) : {};
+    const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
+
+    bonus.def = armorStats.def || 0;
+    bonus.mp = accessoryStats.mp || 0;
+
+    // 🔥 ATK = (STR + bonus) * 1.5 + 무기 고유 ATK
     const baseStr = user.str || 0;
     const totalStr = baseStr + bonus.str;
-    const weaponAtk = user.equipped.weapon?.stats?.atk || 0;
-    const calculatedAtk = Math.floor(totalStr * 1.5 + weaponAtk);
-    bonus.atk = calculatedAtk;
+    const weaponAtk = weaponStats.atk || 0;
+    bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
 
-    // ✅ 렌더링도 try 안에 있어야 함
     res.render('game', { user, bonus });
 
   } catch (err) {
