@@ -1,15 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-
-// 샘플 상점 아이템 목록
-const shopItems = [
-  { name: '나무검', type: 'weapon', atk: 3, price: 50, grade: '일반' },
-  { name: '청동검', type: 'weapon', atk: 6, price: 100, grade: '고급' },
-  { name: '모험가 갑옷', type: 'armor', def: 4, price: 80, grade: '일반' },
-  { name: '마나링', type: 'accessory', mp: 10, price: 70, grade: '희귀' },
-  { name: 'HP 포션', type: 'consumable', effect: 'heal', price: 30, grade: '일반' }
-];
+const itemsForSale = require('../data/shopItems');
 
 // 상점 페이지
 router.get('/', async (req, res) => {
