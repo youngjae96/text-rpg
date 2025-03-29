@@ -12,7 +12,9 @@ const userSchema = new mongoose.Schema({
 
   // 능력치
   hp: { type: Number, default: 100 },
-  mp: { type: Number, default: 30 },
+mp: { type: Number, default: 50 },
+maxHp: { type: Number, default: 100 },
+maxMp: { type: Number, default: 50 },
   str: { type: Number, default: 5 },
   dex: { type: Number, default: 5 },
   vit: { type: Number, default: 5 },
