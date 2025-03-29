@@ -7,7 +7,7 @@ const itemsForSale = require('../data/shopItems');
 router.get('/', async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.redirect('/login');
-  res.render('shop', { user, shopItems });
+res.render('shop', { user, shopItems: itemsForSale });
 });
 
 // 아이템 구매
