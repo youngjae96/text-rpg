@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const { calculateTotalStats } = require('../utils/statCalculator');
 
 // 로그인 상태 확인용 미들웨어
 function checkLogin(req, res, next) {
@@ -18,22 +19,23 @@ router.get('/', checkLogin, async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.redirect('/login');
 
-  const equipped = user.equipped || {};
-  const weapon = equipped.weapon || {};
-  const armor = equipped.armor || {};
-  const accessory = equipped.accessory || {};
+  const totalStats = calculateTotalStats(user);
 
-  // 장비 능력치 추출
   const bonus = {
-    str: weapon.stats?.str || 0,
-    dex: weapon.stats?.dex || 0,
-    int: weapon.stats?.int || 0,
-    vit: armor.stats?.vit || 0,
-    wis: accessory.stats?.wis || 0,
-    luk: accessory.stats?.luk || 0,
-    def: armor.stats?.def || 0,
-    mpPlus: accessory.stats?.mp || 0,
-  };
+    str: totalStats.str - user.str,
+    dex: totalStats.dex - user.dex,
+    int: totalStats.int - user.int,
+    vit: totalStats.vit - user.vit,
+    wis: totalStats.wis - user.wis,
+    luk: totalStats.luk - user.luk,
+    def: user.equipped.armor?.stats?.def || 0,
+    atk: user.equipped.weapon?.stats?.atk || 0,
+    mp: user.equipped.accessory?.stats?.mp || 0
+  res.render('game', {
+    user,
+    bonus
+  });
+});
 
   // ATK 계산 (STR 영향 + 무기 자체 atk)
   const baseStr = user.str || 0;
