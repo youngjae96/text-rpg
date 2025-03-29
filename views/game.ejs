@@ -9,59 +9,44 @@
 
   <p>위치: <strong><%= user.currentLocation %></strong></p>
   <p>레벨: <span id="level"><%= user.level %></span> | 경험치: <span id="exp"><%= user.exp %></span></p>
-<p>HP: <span id="hp"><%= user.hp %></span> | MP: <span id="mp"><%= user.mp %></span></p>
-<p>
-💪 STR: <span id="str"><%= user.str %></span><%= bonus.str ? ` (+${bonus.str})` : '' %> |
-🎯 DEX: <span id="dex"><%= user.dex %></span><%= bonus.dex ? ` (+${bonus.dex})` : '' %> |
-🧠 INT: <span id="int"><%= user.int %></span><%= bonus.int ? ` (+${bonus.int})` : '' %> |
-💖 VIT: <span id="vit"><%= user.vit %></span><%= bonus.vit ? ` (+${bonus.vit})` : '' %> |
-🔮 WIS: <span id="wis"><%= user.wis %></span><%= bonus.wis ? ` (+${bonus.wis})` : '' %> |
-🍀 LUK: <span id="luk"><%= user.luk %></span><%= bonus.luk ? ` (+${bonus.luk})` : '' %> |
-🛡️ DEF: <span id="def"><%= bonus.def || 0 %></span> |
-🔥 ATK: <span id="atk"><%= bonus.atk || 0 %></span> |
-💧 MP+: <span id="mpplus"><%= bonus.mp || 0 %></span>
-</p>
 
-<p>현재 지역: <span id="currentLocation"><%= user.currentLocation %></span></p>
+  <!-- HP와 MP 표시 -->
+  <p>HP: <span id="hp"><%= user.hp %></span> | MP: <span id="mp"><%= user.mp %></span></p>
+  
+  <!-- 단순화된 공격력과 방어력 표시 -->
+  <p>
+    🔥 ATK: <span id="atk"><%= user.attack %></span> | 🛡️ DEF: <span id="def"><%= user.defense %></span>
+  </p>
 
-<script>
-  async function fetchStatus() {
-  const res = await fetch('/status');
-  const data = await res.json();
+  <p>현재 지역: <span id="currentLocation"><%= user.currentLocation %></span></p>
 
-  document.getElementById('level').textContent = data.level;
-  document.getElementById('exp').textContent = data.exp;
-  document.getElementById('hp').textContent = data.hp;
-  document.getElementById('mp').textContent = data.mp;
-  document.getElementById('str').textContent = data.str;
-  document.getElementById('dex').textContent = data.dex;
-  document.getElementById('int').textContent = data.int;
-  document.getElementById('vit').textContent = data.vit;
-  document.getElementById('wis').textContent = data.wis;
-  document.getElementById('luk').textContent = data.luk;
+  <script>
+    async function fetchStatus() {
+      const res = await fetch('/status');
+      const data = await res.json();
 
-  // ✅ 이 부분이 없어서 DEF가 안 바뀌고 있었음!
-  document.getElementById('def').textContent = data.bonus?.def || 0;
-document.getElementById('atk').textContent = data.bonus?.atk || 0;
-}
+      document.getElementById('level').textContent = data.level;
+      document.getElementById('exp').textContent = data.exp;
+      document.getElementById('hp').textContent = data.hp;
+      document.getElementById('mp').textContent = data.mp;
+      document.getElementById('atk').textContent = data.attack;
+      document.getElementById('def').textContent = data.defense;
+      
+      // 전투 로그 업데이트
+      const battleLogList = document.getElementById('battleLog');
+      if (battleLogList && data.battleLogs) {
+        battleLogList.innerHTML = '';
+        data.battleLogs.forEach(log => {
+          const li = document.createElement('li');
+          li.textContent = log;
+          battleLogList.appendChild(li);
+        });
+      }
+    }
 
-
-  // ✅ 전투 로그 출력
-  const battleLogList = document.getElementById('battleLog');
-  if (battleLogList && data.battleLogs) {
-    battleLogList.innerHTML = '';
-    data.battleLogs.forEach(log => {
-      const li = document.createElement('li');
-      li.textContent = log;
-      battleLogList.appendChild(li);
-    });
-  }
-
-}
-
-  setInterval(fetchStatus, 5000); // 5초마다 자동 상태 갱신
-  fetchStatus(); // 최초 1회 실행
-</script>
+    setInterval(fetchStatus, 5000); // 5초마다 상태 갱신
+    fetchStatus(); // 최초 1회 실행
+  </script>
 
   <p>장비:
     <br>무기: <%= user.equipped.weapon ? user.equipped.weapon.name : '없음' %>
@@ -69,119 +54,115 @@ document.getElementById('atk').textContent = data.bonus?.atk || 0;
     <br>장신구: <%= user.equipped.accessory ? user.equipped.accessory.name : '없음' %>
   </p>
 
-<h2>⚔️ 사냥</h2>
+  <h2>⚔️ 사냥</h2>
 
-<% if (['field', 'forest', 'dungeon', 'volcano', 'icecave', 'ruins', 'skyisland'].includes(user.currentLocation)) { %>
-  <% if (user.isAutoHunting) { %>
-    <p style="color: lightgreen;">자동사냥 중입니다! 🔁</p>
-    <form method="POST" action="/battle/stop">
-      <button type="submit">⛔ 멈춤</button>
-    </form>
+  <% if (['field', 'forest', 'dungeon', 'volcano', 'icecave', 'ruins', 'skyisland'].includes(user.currentLocation)) { %>
+    <% if (user.isAutoHunting) { %>
+      <p style="color: lightgreen;">자동사냥 중입니다! 🔁</p>
+      <form method="POST" action="/battle/stop">
+        <button type="submit">⛔ 멈춤</button>
+      </form>
+    <% } else { %>
+      <form method="POST" action="/battle/start">
+        <button type="submit">▶️ 사냥 시작</button>
+      </form>
+    <% } %>
   <% } else { %>
-    <form method="POST" action="/battle/start">
-      <button type="submit">▶️ 사냥 시작</button>
-    </form>
+    <p style="color: gray;">⚠️ 이 지역에서는 사냥할 수 없습니다.</p>
   <% } %>
-<% } else { %>
-  <p style="color: gray;">⚠️ 이 지역에서는 사냥할 수 없습니다.</p>
-<% } %>
 
   <hr />
 
-<script>
-  function useInn() {
-    fetch('/inn', { method: 'POST' })
-      .then(() => location.reload());
-  }
-</script>
+  <script>
+    function useInn() {
+      fetch('/inn', { method: 'POST' })
+        .then(() => location.reload());
+    }
+  </script>
 
-<p>
-  <a href="/inventory">🎒 인벤토리</a> |
-  <a href="/shop">🛒 상점</a> |
-<a href="/inn">🏨 여관</a> |
-  <a href="/jobchange">🔁 전직</a> |
-  <a href="/map">🧭 지역 이동</a> |
-  <a href="#" onclick="togglePlaza()">📜 방명록</a> |
-  <a href="/logout">🚪 로그아웃</a>
-</p>
-
-
+  <p>
+    <a href="/inventory">🎒 인벤토리</a> |
+    <a href="/shop">🛒 상점</a> |
+    <a href="/inn">🏨 여관</a> |
+    <a href="/jobchange">🔁 전직</a> |
+    <a href="/map">🧭 지역 이동</a> |
+    <a href="#" onclick="togglePlaza()">📜 방명록</a> |
+    <a href="/logout">🚪 로그아웃</a>
+  </p>
 
   <hr />
-<h3>⚔️ 전투 로그</h3>
-<ul id="battleLog" style="color:orange;"></ul>
+  <h3>⚔️ 전투 로그</h3>
+  <ul id="battleLog" style="color:orange;"></ul>
 
   <h3>📜 시스템 메시지</h3>
-<ul id="messageList"></ul>
+  <ul id="messageList"></ul>
 
-<div id="plazaBox" style="display:none; position:fixed; top:100px; left:50%; transform:translateX(-50%); width:400px; background:#222; color:#fff; border:1px solid #555; padding:10px; z-index:1000;">
-  <h4>📜 마을 광장 방명록</h4>
-  <form id="plazaForm">
-    <input type="text" name="message" id="plazaInput" placeholder="메시지 입력" style="width:70%;" required />
-    <button type="submit">등록</button>
-  </form>
-  <ul id="plaza-messages" style="max-height:200px; overflow:auto; margin-top:10px;"></ul>
-  <button onclick="togglePlaza()">닫기</button>
-</div>
+  <div id="plazaBox" style="display:none; position:fixed; top:100px; left:50%; transform:translateX(-50%); width:400px; background:#222; color:#fff; border:1px solid #555; padding:10px; z-index:1000;">
+    <h4>📜 마을 광장 방명록</h4>
+    <form id="plazaForm">
+      <input type="text" name="message" id="plazaInput" placeholder="메시지 입력" style="width:70%;" required />
+      <button type="submit">등록</button>
+    </form>
+    <ul id="plaza-messages" style="max-height:200px; overflow:auto; margin-top:10px;"></ul>
+    <button onclick="togglePlaza()">닫기</button>
+  </div>
 
+  <script>
+    // 시스템 메시지 (자동사냥 로그 등)
+    async function fetchMessages() {
+      const res = await fetch('/messages/latest');
+      const data = await res.json();
+      const ul = document.getElementById('messageList');
+      ul.innerHTML = '';
+      data.forEach(msg => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        ul.appendChild(li);
+      });
+    }
 
-<script>
-  // 시스템 메시지 (자동사냥 로그 등)
-  async function fetchMessages() {
-    const res = await fetch('/messages/latest');
-    const data = await res.json();
-    const ul = document.getElementById('messageList');
-    ul.innerHTML = '';
-    data.forEach(msg => {
-      const li = document.createElement('li');
-      li.textContent = msg;
-      ul.appendChild(li);
+    // 방명록 폼 비동기 전송
+    document.getElementById('plazaForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // 페이지 새로고침 방지
+      const input = document.getElementById('plazaInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      await fetch('/plaza/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ message: msg })
+      });
+
+      input.value = ''; // 입력창 초기화
+      loadPlazaMessages(); // 메시지 갱신
     });
-  }
 
+    // 방명록 UI 토글
+    function togglePlaza() {
+      const box = document.getElementById('plazaBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
 
-// 방명록 폼 비동기 전송
-document.getElementById('plazaForm').addEventListener('submit', async function (e) {
-  e.preventDefault(); // 페이지 새로고침 방지
-  const input = document.getElementById('plazaInput');
-  const msg = input.value.trim();
-  if (!msg) return;
+    // 방명록 메시지 갱신
+    async function loadPlazaMessages() {
+      const res = await fetch('/plaza/messages');
+      const data = await res.json();
+      const ul = document.getElementById('plaza-messages');
+      ul.innerHTML = '';
+      data.forEach(msg => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        ul.appendChild(li);
+      });
+    }
 
-  await fetch('/plaza/post', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ message: msg })
-  });
-
-  input.value = ''; // 입력창 초기화
-  loadPlazaMessages(); // 메시지 갱신
-});
-
-  // 방명록 UI 토글
-  function togglePlaza() {
-    const box = document.getElementById('plazaBox');
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
-  }
-
-  // 방명록 메시지 갱신
-  async function loadPlazaMessages() {
-    const res = await fetch('/plaza/messages');
-    const data = await res.json();
-    const ul = document.getElementById('plaza-messages');
-    ul.innerHTML = '';
-    data.forEach(msg => {
-      const li = document.createElement('li');
-      li.textContent = msg;
-      ul.appendChild(li);
-    });
-  }
-
-  // 5초마다 새로고침
-  setInterval(fetchMessages, 5000);
-  setInterval(loadPlazaMessages, 5000);
-  fetchMessages();
-  loadPlazaMessages();
-</script>
+    // 5초마다 새로고침
+    setInterval(fetchMessages, 5000);
+    setInterval(loadPlazaMessages, 5000);
+    fetchMessages();
+    loadPlazaMessages();
+  </script>
 
 </body>
 </html>
