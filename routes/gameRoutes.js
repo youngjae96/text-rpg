@@ -11,26 +11,26 @@ function checkLogin(req, res, next) {
 }
 
 // 메인 게임 화면
+
 router.get('/', checkLogin, async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.redirect('/login');
 
-  // ✅ maxHp / maxMp 필드가 없다면 자동 추가
-  let updated = false;
-  if (user.maxHp === undefined) {
-    user.maxHp = user.hp || 100;
-    updated = true;
-  }
-  if (user.maxMp === undefined) {
-    user.maxMp = user.mp || 50;
-    updated = true;
-  }
-  if (updated) {
-    await user.save(); // 자동으로 업데이트 저장
-  }
+  // 장착 아이템의 능력치 합산
+  const equipped = user.equipped || {};
+  const weapon = equipped.weapon || {};
+  const armor = equipped.armor || {};
+  const accessory = equipped.accessory || {};
 
-  res.render('game', { user });
+  const bonus = {
+    str: weapon.atk || 0,
+    def: armor.def || 0,
+    mp: accessory.mp || 0
+  };
+
+  res.render('game', { user, bonus });
 });
+
 
 
 // 로그인 화면
