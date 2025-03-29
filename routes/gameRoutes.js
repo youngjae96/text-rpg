@@ -12,6 +12,8 @@ function checkLogin(req, res, next) {
 
 // 메인 게임 화면
 
+// gameRoutes.js
+
 router.get('/', checkLogin, async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.redirect('/login');
@@ -23,13 +25,17 @@ router.get('/', checkLogin, async (req, res) => {
   const accessory = equipped.accessory || {};
 
   const bonus = {
-    str: weapon.atk || 0,
-    def: armor.def || 0,
-    mp: accessory.mp || 0
+    str: weapon.str || 0,
+    dex: weapon.dex || 0,
+    int: weapon.int || 0,
+    vit: armor.vit || 0,
+    wis: accessory.wis || 0,
+    luk: accessory.luk || 0
   };
 
   res.render('game', { user, bonus });
 });
+
 
 
 
