@@ -21,17 +21,13 @@ const UserSchema = new mongoose.Schema({
   },
   gold: { type: Number, default: 0 },
   level: { type: Number, default: 1 },
-  exp: { type: Number, default: 0 }
-});
-
-
-
+  exp: { type: Number, default: 0 },
+  
+  // 스키마 내부에 추가 필드 포함
   isAutoHunting: { type: Boolean, default: false },
   currentLocation: { type: String, default: 'village' },
-
   messages: { type: [String], default: [] },      // 시스템 메시지
-  battleLogs: { type: [String], default: [] }     // ✅ 전투 로그
+  battleLogs: { type: [String], default: [] }       // 전투 로그
 });
 
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', UserSchema);
