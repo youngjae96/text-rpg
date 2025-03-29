@@ -25,13 +25,17 @@ router.get('/', checkLogin, async (req, res) => {
   const accessory = equipped.accessory || {};
 
   const bonus = {
-    str: weapon.str || 0,
-    dex: weapon.dex || 0,
-    int: weapon.int || 0,
-    vit: armor.vit || 0,
-    wis: accessory.wis || 0,
-    luk: accessory.luk || 0
-  };
+  str: weapon.str || 0,
+  dex: weapon.dex || 0,
+  int: weapon.int || 0,
+  vit: armor.vit || 0,
+  wis: accessory.wis || 0,
+  luk: accessory.luk || 0,
+  atk: weapon.atk || 0, // ✅ 추가
+  def: armor.def || 0,
+  mpPlus: accessory.mp || 0
+};
+
 
   res.render('game', { user, bonus });
 });
