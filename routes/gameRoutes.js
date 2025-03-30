@@ -47,7 +47,9 @@ const totalStr = baseStr + bonusStr;
 const weaponAtk = weaponStats.atk || 0;
 bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
 
-
+    console.log('🪓 DEBUG → user.attack:', user.attack);
+    console.log('🪓 DEBUG → bonus:', bonus);
+    console.log('🪓 DEBUG → weaponStats:', weaponStats);
     res.render('game', { user, bonus });
   } catch (err) {
     console.error('게임 화면 로딩 중 오류:', err);
