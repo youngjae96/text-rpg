@@ -67,7 +67,7 @@ function startAutoHuntLoop() {
   user.exp += expGain;
   user.gold += goldGain;
 
-  user.battleLogs.push(`🗡️ 몬스터 처치 (+${expGain} EXP, +${goldGain} G)`);
+ user.battleLogs.push(`🗡️ 몬스터 처치 (공격력: ${damage} / +${expGain} EXP, +${goldGain} G)`);
 
   // 몬스터 반격
   const monsterDamage = Math.floor(Math.random() * 5) + 5;
