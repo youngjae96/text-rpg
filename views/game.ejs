@@ -27,35 +27,30 @@
 
   <script>
   async function fetchStatus() {
-    const res = await fetch('/status');
-    const data = await res.json();
+  const res = await fetch('/status');
+  const data = await res.json();
 
-    document.getElementById('level').textContent = data.level;
-    document.getElementById('exp').textContent = data.exp;
-    document.getElementById('hp').textContent = data.hp;
-    document.getElementById('mp').textContent = data.mp;
-    // 선택: RPG 스탯이 없으면 이 부분 생략 가능
-    // document.getElementById('str').textContent = data.str;
-    // document.getElementById('dex').textContent = data.dex;
-    // document.getElementById('int').textContent = data.int;
+  document.getElementById('level').textContent = data.level;
+  document.getElementById('exp').textContent = data.exp;
+  document.getElementById('hp').textContent = data.hp;
+  document.getElementById('mp').textContent = data.mp;
+  document.getElementById('atk').textContent = data.bonus.atk;
+  document.getElementById('def').textContent = data.bonus.def;
 
-    document.getElementById('atk').textContent = data.bonus.atk;
-    document.getElementById('def').textContent = data.bonus.def;
-    document.getElementById('mpplus').textContent = data.bonus.mp;
-
-    const logList = document.getElementById('battleLogs');
-    if (logList && data.battleLogs) {
-      logList.innerHTML = '';
-      data.battleLogs.forEach(log => {
-        const li = document.createElement('li');
-        li.textContent = log;
-        logList.appendChild(li);
-      });
-    }
+  // ✅ 전투 로그 렌더링
+  const battleLogList = document.getElementById('battleLog');
+  if (battleLogList && data.battleLogs) {
+    battleLogList.innerHTML = '';
+    data.battleLogs.forEach(log => {
+      const li = document.createElement('li');
+      li.textContent = log;
+      battleLogList.appendChild(li);
+    });
   }
+}
 
-  fetchStatus();
-  setInterval(fetchStatus, 5000); // 자동 갱신
+fetchStatus();
+setInterval(fetchStatus, 5000);
 </script>
 
 
