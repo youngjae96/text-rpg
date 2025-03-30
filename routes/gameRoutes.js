@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const { calculateTotalStats } = require('../utils/statCalculator');
 const { getItemStatsByName } = require('../utils/itemStats');
 
 function checkLogin(req, res, next) {
@@ -11,24 +10,11 @@ function checkLogin(req, res, next) {
   next();
 }
 
+// 메인 게임 화면
 router.get('/', checkLogin, async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
     if (!user) return res.redirect('/login');
-
-    const totalStats = calculateTotalStats(user);
-
-    const bonus = {
-      str: totalStats.str - user.str,
-      dex: totalStats.dex - user.dex,
-      int: totalStats.int - user.int,
-      vit: totalStats.vit - user.vit,
-      wis: totalStats.wis - user.wis,
-      luk: totalStats.luk - user.luk,
-      def: 0,
-      atk: 0,
-      mp: 0
-    };
 
     const weapon = user.equipped.weapon;
     const armor = user.equipped.armor;
@@ -38,24 +24,51 @@ router.get('/', checkLogin, async (req, res) => {
     const armorStats = armor ? getItemStatsByName(armor.name) : {};
     const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
 
-    bonus.def = armorStats.def || 0;
-    bonus.mp = accessoryStats.mp || 0;
+    const bonus = {
+      atk: (typeof user.attack === 'number' ? user.attack : 0) + (weaponStats.atk || 0),
+      def: armorStats.def || 0,
+      mp: accessoryStats.mp || 0
+    };
 
-const baseStr = user.str || 0;
-const bonusStr = typeof bonus.str === 'number' ? bonus.str : 0; // 🔐 안전하게 숫자 보장
-const totalStr = baseStr + bonusStr;
-const weaponAtk = weaponStats.atk || 0;
-bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
-
-    console.log('🪓 DEBUG → user.attack:', user.attack);
-    console.log('🪓 DEBUG → bonus:', bonus);
-    console.log('🪓 DEBUG → weaponStats:', weaponStats);
     res.render('game', { user, bonus });
   } catch (err) {
     console.error('게임 화면 로딩 중 오류:', err);
     res.status(500).send('서버 오류');
   }
 });
+
+// 상태 API (AJAX)
+router.get('/status', async (req, res) => {
+  const user = await User.findById(req.session.userId);
+  if (!user) return res.status(401).json({});
+
+  const weapon = user.equipped.weapon;
+  const armor = user.equipped.armor;
+  const accessory = user.equipped.accessory;
+
+  const weaponStats = weapon ? getItemStatsByName(weapon.name) : {};
+  const armorStats = armor ? getItemStatsByName(armor.name) : {};
+  const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
+
+  const bonus = {
+    atk: (typeof user.attack === 'number' ? user.attack : 0) + (weaponStats.atk || 0),
+    def: armorStats.def || 0,
+    mp: accessoryStats.mp || 0
+  };
+
+  res.json({
+    level: user.level,
+    exp: user.exp,
+    hp: user.hp,
+    mp: user.mp,
+    gold: user.gold,
+    attack: user.attack,
+    defense: user.defense,
+    bonus,
+    battleLogs: user.battleLogs.slice(-10).reverse()
+  });
+});
+
 
 
 
