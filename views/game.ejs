@@ -14,9 +14,12 @@
   <p>HP: <span id="hp"><%= user.hp %></span> | MP: <span id="mp"><%= user.mp %></span></p>
   
   <!-- 단순화된 공격력과 방어력 표시 -->
- <p>
-  🔥 ATK: <span id="atk"><%= bonus.atk || 0 %></span> | 🛡️ DEF: <span id="def"><%= bonus.def || 0 %></span>
+<!-- 공격력 / 방어력 출력 -->
+<p>
+  🔥 ATK: <span id="atk"><%= typeof bonus.atk !== 'undefined' ? bonus.atk : 0 %></span>
+  | 🛡️ DEF: <span id="def"><%= typeof bonus.def !== 'undefined' ? bonus.def : 0 %></span>
 </p>
+
 
 
   <p>현재 지역: <span id="currentLocation"><%= user.currentLocation %></span></p>
