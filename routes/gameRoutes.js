@@ -41,10 +41,12 @@ router.get('/', checkLogin, async (req, res) => {
     bonus.def = armorStats.def || 0;
     bonus.mp = accessoryStats.mp || 0;
 
-    const baseStr = user.str || 0;
-    const totalStr = baseStr + bonus.str;
-    const weaponAtk = weaponStats.atk || 0;
-    bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
+const baseStr = user.str || 0;
+const bonusStr = typeof bonus.str === 'number' ? bonus.str : 0; // 🔐 안전하게 숫자 보장
+const totalStr = baseStr + bonusStr;
+const weaponAtk = weaponStats.atk || 0;
+bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
+
 
     res.render('game', { user, bonus });
   } catch (err) {
