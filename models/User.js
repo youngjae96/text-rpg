@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 // 기존 스탯들 제거 후 단순화
 const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
   nickname: String,
   password: String,
   location: {
