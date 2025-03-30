@@ -26,21 +26,24 @@ function getItemStatsByName(name) {
 }
 
 // 착용 장비로부터 능력치 합산
+const { getItemStatsByName } = require('./itemStats');
+
 function getEquippedStats(user) {
-  const total = { str: 0, dex: 0, int: 0 };
+  const total = { atk: 0, def: 0, mp: 0 };
 
   for (const slot of ['weapon', 'armor', 'accessory']) {
     const item = user.equipped?.[slot];
     if (item && item.name) {
       const bonus = getItemStatsByName(item.name);
-      total.str += bonus.str;
-      total.dex += bonus.dex;
-      total.int += bonus.int;
+      total.atk += bonus.atk || 0;
+      total.def += bonus.def || 0;
+      total.mp += bonus.mp || 0;
     }
   }
 
   return total;
 }
+
 
 function startAutoHuntLoop() {
   setInterval(async () => {
