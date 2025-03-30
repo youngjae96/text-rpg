@@ -157,8 +157,9 @@ router.get('/status', async (req, res) => {
   const armorStats = armor ? getItemStatsByName(armor.name) : {};
   const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
 
-  bonus.def = armorStats.def || 0;
-  bonus.mp = accessoryStats.mp || 0;
+def: typeof armorStats.def === 'number' ? armorStats.def : 0,
+mp: typeof accessoryStats.mp === 'number' ? accessoryStats.mp : 0
+
 
   const baseStr = user.str || 0;
   const totalStr = baseStr + bonus.str;
