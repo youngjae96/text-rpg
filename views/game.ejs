@@ -38,7 +38,7 @@
   document.getElementById('def').textContent = data.bonus.def;
 
   // ✅ 전투 로그 렌더링
-  const battleLogList = document.getElementById('battleLog');
+  const battleLogList = document.getElementById('battleLogs');
   if (battleLogList && data.battleLogs) {
     battleLogList.innerHTML = '';
     data.battleLogs.forEach(log => {
