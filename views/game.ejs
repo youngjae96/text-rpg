@@ -25,16 +25,23 @@
   <p>현재 지역: <span id="currentLocation"><%= user.currentLocation %></span></p>
 
   <script>
-    async function fetchStatus() {
-      const res = await fetch('/status');
-      const data = await res.json();
+  async function fetchStatus() {
+    const res = await fetch('/status');
+    const data = await res.json();
 
-      document.getElementById('level').textContent = data.level;
-      document.getElementById('exp').textContent = data.exp;
-      document.getElementById('hp').textContent = data.hp;
-      document.getElementById('mp').textContent = data.mp;
-      document.getElementById('atk').textContent = data.attack;
-      document.getElementById('def').textContent = data.defense;
+    document.getElementById('level').textContent = data.level;
+    document.getElementById('exp').textContent = data.exp;
+    document.getElementById('hp').textContent = data.hp;
+    document.getElementById('mp').textContent = data.mp;
+
+    // ✅ 잘못된 부분 수정!
+    document.getElementById('atk').textContent = data.bonus.atk;
+    document.getElementById('def').textContent = data.bonus.def;
+  }
+
+  fetchStatus();
+</script>
+
       
       // 전투 로그 업데이트
       const battleLogList = document.getElementById('battleLog');
