@@ -34,31 +34,30 @@
     document.getElementById('exp').textContent = data.exp;
     document.getElementById('hp').textContent = data.hp;
     document.getElementById('mp').textContent = data.mp;
+    // 선택: RPG 스탯이 없으면 이 부분 생략 가능
+    // document.getElementById('str').textContent = data.str;
+    // document.getElementById('dex').textContent = data.dex;
+    // document.getElementById('int').textContent = data.int;
 
-    // ✅ 잘못된 부분 수정!
     document.getElementById('atk').textContent = data.bonus.atk;
     document.getElementById('def').textContent = data.bonus.def;
+    document.getElementById('mpplus').textContent = data.bonus.mp;
+
+    const logList = document.getElementById('battleLogs');
+    if (logList && data.battleLogs) {
+      logList.innerHTML = '';
+      data.battleLogs.forEach(log => {
+        const li = document.createElement('li');
+        li.textContent = log;
+        logList.appendChild(li);
+      });
+    }
   }
 
   fetchStatus();
+  setInterval(fetchStatus, 5000); // 자동 갱신
+</script>
 
-
-      
-      // 전투 로그 업데이트
-      const battleLogList = document.getElementById('battleLog');
-      if (battleLogList && data.battleLogs) {
-        battleLogList.innerHTML = '';
-        data.battleLogs.forEach(log => {
-          const li = document.createElement('li');
-          li.textContent = log;
-          battleLogList.appendChild(li);
-        });
-      }
-    }
-
-    setInterval(fetchStatus, 5000); // 5초마다 상태 갱신
-    fetchStatus(); // 최초 1회 실행
-  </script>
 
   <p>장비:
     <br>무기: <%= user.equipped.weapon ? user.equipped.weapon.name : '없음' %>
