@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const { getItemStatsByName } = require('../utils/itemStats');
 
+// 로그인 상태 확인용 미들웨어
 function checkLogin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect('/login');
@@ -16,18 +17,21 @@ router.get('/', checkLogin, async (req, res) => {
     const user = await User.findById(req.session.userId);
     if (!user) return res.redirect('/login');
 
+    // 장착한 아이템 정보 가져오기
     const weapon = user.equipped.weapon;
     const armor = user.equipped.armor;
     const accessory = user.equipped.accessory;
 
+    // 아이템 스탯 가져오기
     const weaponStats = weapon ? getItemStatsByName(weapon.name) : {};
     const armorStats = armor ? getItemStatsByName(armor.name) : {};
     const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
 
+    // 보너스 스탯 계산
     const bonus = {
-      atk: (typeof user.attack === 'number' ? user.attack : 0) + (weaponStats.atk || 0),
-      def: armorStats.def || 0,
-      mp: accessoryStats.mp || 0
+      atk: (user.attack || 0) + (weaponStats.atk || 0),
+      def: (user.defense || 0) + (armorStats.def || 0),
+      mp: (user.mp || 0) + (accessoryStats.mp || 0)
     };
 
     res.render('game', { user, bonus });
@@ -37,23 +41,26 @@ router.get('/', checkLogin, async (req, res) => {
   }
 });
 
-// 상태 API (AJAX)
+// 상태 정보 제공 API
 router.get('/status', async (req, res) => {
   const user = await User.findById(req.session.userId);
   if (!user) return res.status(401).json({});
 
+  // 장착한 아이템 정보 가져오기
   const weapon = user.equipped.weapon;
   const armor = user.equipped.armor;
   const accessory = user.equipped.accessory;
 
+  // 아이템 스탯 가져오기
   const weaponStats = weapon ? getItemStatsByName(weapon.name) : {};
   const armorStats = armor ? getItemStatsByName(armor.name) : {};
   const accessoryStats = accessory ? getItemStatsByName(accessory.name) : {};
 
+  // 보너스 스탯 계산
   const bonus = {
-    atk: (typeof user.attack === 'number' ? user.attack : 0) + (weaponStats.atk || 0),
-    def: armorStats.def || 0,
-    mp: accessoryStats.mp || 0
+    atk: (user.attack || 0) + (weaponStats.atk || 0),
+    def: (user.defense || 0) + (armorStats.def || 0),
+    mp: (user.mp || 0) + (accessoryStats.mp || 0)
   };
 
   res.json({
@@ -68,6 +75,7 @@ router.get('/status', async (req, res) => {
     battleLogs: user.battleLogs.slice(-10).reverse()
   });
 });
+
 
 
 
