@@ -164,7 +164,6 @@ const mp: typeof accessoryStats.mp === 'number' ? accessoryStats.mp : 0
   const baseStr = user.str || 0;
   const totalStr = baseStr + bonus.str;
   const weaponAtk = weaponStats.atk || 0;
-  bonus.atk = Math.floor(totalStr * 1.5 + weaponAtk);
 
   res.json({
     level: user.level,
