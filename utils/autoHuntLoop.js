@@ -59,8 +59,10 @@ function startAutoHuntLoop() {
   }
 
   const equipped = getEquippedStats(user);
-  const totalStr = user.str + equipped.str;
-  const damage = totalStr + Math.floor(user.level / 2);
+  const baseAtk = user.attack || 0;
+const equipAtk = equippedStats.atk || 0;
+const damage = baseAtk + equipAtk + Math.floor(user.level / 2);
+
 
   const expGain = 10;
   const goldGain = 5;
